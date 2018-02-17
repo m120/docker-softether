@@ -1,0 +1,23 @@
+version: '2'
+services:
+  softether:
+    build: .
+    image: softether
+    volumes:
+      - ./backup.vpn_server.config:/opt/vpnserver/backup.vpn_server.config
+      - /opt/vpnserver
+    ports:
+      - 443:443
+      - 500:500/udp
+      - 4500:4500/udp
+  fluentd:
+    image: fluent/fluentd:v1.1.0
+    environment:
+      - FLUENT_UID=0
+    volumes:
+      - ./fluentd_conf:/fluentd/etc/
+      - ./logs:/fluentd/log/vpnserver/
+    volumes_from:
+      - softether
+    ports:
+      - 24220:24220
