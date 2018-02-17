@@ -1,0 +1,7 @@
+DOCKER_IMAGE: "softether"
+DOCKER_TAG: "latest"
+DOCKER_FILE: "."
+DOCKER_OPTS: "--rm -d -p 443:443 -p 500:500/UDP -p 4500:4500/UDP"
+
+BACKUP_DIR: "./backup"
+BAKCUP_FILE: "/opt/vpnserver_config/vpn_server.config"

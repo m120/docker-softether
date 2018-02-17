@@ -1,0 +1,53 @@
+default:
+  desc: Docker Controler
+  cmds:
+    - echo "run $task -l"
+
+build-run:
+  desc: Build and Run.
+  cmds:
+    - task: build
+    - echo
+    - task: run
+    - echo
+    - task: ps
+
+build:
+  desc: Docker Build
+  cmds:
+    - docker build -t {{.DOCKER_IMAGE}}:{{.DOCKER_TAG}} {{.DOCKER_FILE}}
+
+run:
+  desc: Dokcer run
+  cmds:
+    - docker run {{.DOCKER_OPTS}} {{.DOCKER_IMAGE}}:{{.DOCKER_TAG}}
+
+ps:
+  desc: Dokcer ps for {{.DOCKER_IMAGE}}
+  cmds:
+    - docker ps | awk '$0 ~ /{{.DOCKER_IMAGE}}/'
+
+stop:
+  desc: Dokcer stop
+  cmds:
+    - docker stop $(docker ps | awk '$0 ~ /{{.DOCKER_IMAGE}}/ {print $1}')
+  silent: true
+
+shell:
+  desc: Get into a container
+  cmds:
+    - docker exec -it $(docker ps | awk '$0 ~ /{{.DOCKER_IMAGE}}/ {print $1}') {{.command}}
+  vars:
+    command: bash
+
+rmi:
+  desc: Delete Dokcer image
+  cmds:
+    - docker rmi {{.DOCKER_IMAGE}} && echo
+
+backup_file:
+  desc: backup
+  cmds:
+    - install -d {{.BACKUP_DIR}}/{{now | date "060102_1504"}}
+    - docker cp $(docker ps | awk '$0 ~ /{{.DOCKER_IMAGE}}/ {print $1}'):{{.BAKCUP_FILE}} {{.BACKUP_DIR}}/{{now | date "060102_1504"}}/
+
