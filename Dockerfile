@@ -3,11 +3,14 @@ FROM ubuntu:16.04
 MAINTAINER m120
 
 ENV SE_VER v4.25-9656-rtm-2018.01.15
+ENV TIMEZONE Asia/Tokyo
 
 RUN apt update && \
-  apt install -y gcc make curl
+  apt install -y gcc make curl tzdata
 
 RUN curl http://jp.softether-download.com/files/softether/${SE_VER}-tree/Linux/SoftEther_VPN_Server/64bit_-_Intel_x64_or_AMD64/softether-vpnserver-${SE_VER}-linux-x64-64bit.tar.gz | tar zx -C /opt/
+
+RUN ln -sf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime
 
 ## Install
 WORKDIR /opt/vpnserver
